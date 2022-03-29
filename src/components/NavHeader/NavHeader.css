@@ -1,0 +1,33 @@
+.header {
+	color: white;
+}
+
+button {
+	display: inline-block;
+	color: white;
+	background-color: inherit;
+	border: none;
+}
+
+
+.header-center {
+	display: flex;
+	flex: 1 1 auto;
+	width: calc(100% - 96px);
+}
+
+.header-center .search {
+	display: flex;
+	flex: 1 0 auto;
+	justify-content: center;
+}
+
+.header-center .search input {
+	width: 400px;
+}
+
+.header-center .options {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}

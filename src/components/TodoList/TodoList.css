@@ -1,0 +1,11 @@
+.todo-list {
+	padding: 0;
+}
+
+.todo-list > li {
+	list-style: none;
+}
+
+.todo-list > li > div {
+	display: inline-block;
+}

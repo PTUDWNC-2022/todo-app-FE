@@ -1,0 +1,19 @@
+.form-check-input[type='checkbox'] {
+	cursor: pointer;
+	border-radius: 50%;
+	border-color: #3e69e4;
+	padding: 5px;
+}
+
+.todo-item {
+	width: 100%;
+	padding: 10px;
+	border-bottom: 1px solid #ededed;
+	border-width: 90%;
+}
+
+.todo-item:hover,
+.todo-item:hover label {
+	cursor: pointer;
+	background-color: #ededed;
+}
