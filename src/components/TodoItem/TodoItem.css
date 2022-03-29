@@ -9,11 +9,14 @@
 	width: 100%;
 	padding: 10px;
 	border-bottom: 1px solid #ededed;
-	border-width: 90%;
 }
 
 .todo-item:hover,
 .todo-item:hover label {
 	cursor: pointer;
 	background-color: #ededed;
+}
+
+.checked-item .form-check-label {
+	text-decoration: line-through;
 }

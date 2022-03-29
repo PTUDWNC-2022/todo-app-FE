@@ -3,9 +3,9 @@ import { Form } from 'react-bootstrap';
 
 import './TodoItem.css';
 
-const TodoItem = ({ name, isCompleted, onToggle }) => {
+const TodoItem = ({ name, isCompleted, onToggle, onTodoClicked }) => {
 	return (
-		<li className="todo-item">
+		<li className={`todo-item ${isCompleted && "checked-item"}`} onClick={onTodoClicked}>
 			<Form.Check
 				type="checkbox"
 				label={name}
