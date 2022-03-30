@@ -39,25 +39,46 @@ const TodoList = ({ setTodoCallback }) => {
 		const id = todo._id;
 
 		const requestOptions = {
-		  	method: 'PUT',
+			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ isCompleted: !isCompleted })
+			body: JSON.stringify({ isCompleted: !isCompleted }),
 		};
 
-		fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, requestOptions).then(async response => {
-			if (response.ok) {
-				const result = await loadAllTodos();
-				setTodoCallback(result.find(item => item._id === id));
-			} else {
-				const data = await response.json();
-				const error = (data && data.message) || response.status;
-				await Promise.reject(error);
-			}
-		}).catch(error => setError(error));
+		fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, requestOptions)
+			.then(async (response) => {
+				if (response.ok) {
+					const result = await loadAllTodos();
+					setTodoCallback(result.find((item) => item._id === id));
+				} else {
+					const data = await response.json();
+					const error = (data && data.message) || response.status;
+					await Promise.reject(error);
+				}
+			})
+			.catch((error) => setError(error));
 	};
 
 	const handleViewTodoDetail = (todo) => {
 		setTodoCallback(todo);
+	};
+
+	const handleDeleteTodo = (todo) => {
+		const id = todo._id;
+
+		//Call API
+		fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, { method: 'DELETE' })
+			.then((res) => res.json())
+			.then(
+				(result) => {
+					console.log(result);
+					setIsLoaded(true);
+					loadAllTodos();
+				},
+				(error) => {
+					setIsLoaded(true);
+					setError(error);
+				}
+			);
 	};
 
 	if (error) {
@@ -78,6 +99,7 @@ const TodoList = ({ setTodoCallback }) => {
 							isCompleted={todo.isCompleted}
 							onToggle={() => handleToggleTodoItem(todo)}
 							onTodoClicked={() => handleViewTodoDetail(todo)}
+							onTodoDelete={() => handleDeleteTodo(todo)}
 						/>
 					))}
 				</ul>

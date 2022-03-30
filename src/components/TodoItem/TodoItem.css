@@ -9,6 +9,9 @@
 	width: 100%;
 	padding: 10px;
 	border-bottom: 1px solid #ededed;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .todo-item:hover,
@@ -19,4 +22,45 @@
 
 .checked-item .form-check-label {
 	text-decoration: line-through;
+}
+
+.dropdown-btn {
+	padding: 0 10px;
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing: 1px;
+	background-color: inherit;
+	/* border-color: none; */
+	border: none;
+	color: #333;
+}
+
+.dropdown-btn::after {
+	content: '...';
+	border: none;
+}
+
+.dropdown-btn:hover {
+	background-color: darken(#ebecf0, 10);
+	border-color: darken(#ebecf0, 10);
+}
+
+.dropdown-menu {
+	padding: 5px 0;
+	min-width: 200px;
+}
+
+.dropdown-menu .dropdown-item {
+	padding: 8px 16px;
+	font-size: 14px;
+}
+
+.dropdown-item i {
+	font-size: 16px;
+	margin-right: 10px;
+}
+
+.delete-task,
+.delete-task:hover {
+	color: red;
 }

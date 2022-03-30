@@ -2,10 +2,12 @@
 	padding: 0;
 }
 
-.todo-list > li {
+.todo-list > .todo-item {
 	list-style: none;
 }
 
-.todo-list > li > div {
+.todo-list > .todo-item > div {
 	display: inline-block;
 }
+
+
