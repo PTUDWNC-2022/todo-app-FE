@@ -11,7 +11,6 @@ const RightSideBar = ({ todoDetail }) => {
 			 * If clicked on outside of element
 			 */
 			function handleClickOutside(event) {
-				console.log(event.target.classList)
 				if (
 					ref.current &&
 					!ref.current.contains(event.target) &&

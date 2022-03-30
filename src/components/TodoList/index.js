@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navbar } from 'react-bootstrap';
 import TodoItem from '../TodoItem';
 import './TodoList.css';
+import TodoForm from "../TodoForm";
 
 const TodoList = ({ setTodoCallback }) => {
 	const [error, setError] = useState(null);
@@ -32,6 +33,26 @@ const TodoList = ({ setTodoCallback }) => {
 					setError(error);
 				}
 			);
+	};
+
+	const handleCreateNewTodo = (input) => {
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ name: input, isCompleted: false }),
+		};
+
+		fetch(`${process.env.REACT_APP_API_URL}/todos`, requestOptions).then(async (resp) => {
+			if (resp.ok) {
+				await loadAllTodos();
+			} else {
+				const data = await resp.json();
+				const error = (data && data.message) || resp.status;
+				await Promise.reject(error);
+			}
+		}).catch(error => {
+			setError(error);
+		});
 	};
 
 	const handleToggleTodoItem = (todo) => {
@@ -70,7 +91,6 @@ const TodoList = ({ setTodoCallback }) => {
 			.then((res) => res.json())
 			.then(
 				(result) => {
-					console.log(result);
 					setIsLoaded(true);
 					loadAllTodos();
 				},
@@ -91,6 +111,7 @@ const TodoList = ({ setTodoCallback }) => {
 				<Navbar variant="light">
 					<Navbar.Brand>My Day</Navbar.Brand>
 				</Navbar>
+				<TodoForm handleCreateNewTodo={handleCreateNewTodo}/>
 				<ul className="todo-list">
 					{todos.map((todo) => (
 						<TodoItem
