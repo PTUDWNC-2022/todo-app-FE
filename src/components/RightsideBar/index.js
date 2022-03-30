@@ -11,10 +11,13 @@ const RightSideBar = ({ todoDetail }) => {
 			 * If clicked on outside of element
 			 */
 			function handleClickOutside(event) {
+				console.log(event.target.classList)
 				if (
 					ref.current &&
 					!ref.current.contains(event.target) &&
-					!event.target.classList.contains('todo-item')
+					!event.target.classList.contains('todo-item') &&
+					!event.target.classList.contains('form-check-label') &&
+					!event.target.classList.contains('form-check-input')
 				) {
 					setExpand(false);
 				} else {

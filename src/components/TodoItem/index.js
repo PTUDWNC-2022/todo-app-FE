@@ -24,7 +24,7 @@ const TodoItem = ({
 
 	return (
 		<li
-			className={`todo-item ${isCompleted && 'checked-item'}`}
+			className={`todo-item ${isCompleted ? 'checked-item' : ''}`}
 			onClick={onTodoClicked}>
 			<Form.Check
 				type="checkbox"
