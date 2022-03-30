@@ -15,14 +15,14 @@ const TodoList = ({ setTodoCallback }) => {
 		loadAllTodos();
 	}, []);
 
-	const loadAllTodos = () => {
-		fetch(`${process.env.REACT_APP_API_URL}/todos`)
+	const loadAllTodos = async () => {
+		return fetch(`${process.env.REACT_APP_API_URL}/todos`)
 			.then((res) => res.json())
 			.then(
 				(result) => {
-					console.log('call')
 					setIsLoaded(true);
 					setTodos(result);
+					return Promise.resolve(result);
 				},
 				// Note: it's important to handle errors here
 				// instead of a catch() block so that we don't swallow
@@ -46,10 +46,8 @@ const TodoList = ({ setTodoCallback }) => {
 
 		fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, requestOptions).then(async response => {
 			if (response.ok) {
-				console.log(todos)
-				await loadAllTodos();
-				console.log(todos)
-				setTodoCallback(todos.find(item => item._id === id));
+				const result = await loadAllTodos();
+				setTodoCallback(result.find(item => item._id === id));
 			} else {
 				const data = await response.json();
 				const error = (data && data.message) || response.status;
