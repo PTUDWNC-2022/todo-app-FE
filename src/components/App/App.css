@@ -2,8 +2,23 @@
 	font-size: 20px;
 }
 
+input.form-control:focus,
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus,
+input[type='number']:focus,
+[type='text'].form-control:focus,
+[type='password'].form-control:focus,
+[type='email'].form-control:focus,
+[type='tel'].form-control:focus {
+	box-shadow: none;
+	border: 2px solid #4c9aff;
+}
+
 .btn:focus,
 .btn:active {
 	outline: none !important;
 	box-shadow: none !important;
+	background-color: inherit;
+	color: inherit;
 }

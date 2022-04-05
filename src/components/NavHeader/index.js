@@ -8,7 +8,7 @@ const NavHeader = () => {
 		<Navbar bg="primary" variant="dark">
 			<Container fluid className="header">
 				<div className="header-left">
-					<button>
+					<button className="wrap-icon">
 						<i className="bi bi-grid-3x3-gap-fill icon"></i>
 					</button>
 				</div>
@@ -23,19 +23,19 @@ const NavHeader = () => {
 						/>
 					</Form>
 					<div className="options">
-						<button>
+						<button className="wrap-icon">
 							<i className="bi bi-gear icon"></i>
 						</button>
-						<button>
+						<button className="wrap-icon">
 							<i className="bi bi-question-lg icon"></i>
 						</button>
-						<button>
+						<button className="wrap-icon">
 							<i className="bi bi-megaphone icon"></i>
 						</button>
 					</div>
 				</div>
 				<div className="header-right">
-					<button>
+					<button className="wrap-icon">
 						<i className="bi bi-person-circle icon"></i>
 					</button>
 				</div>

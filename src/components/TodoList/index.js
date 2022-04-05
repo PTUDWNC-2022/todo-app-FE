@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Navbar } from 'react-bootstrap';
 import TodoItem from '../TodoItem';
 import './TodoList.css';
-import TodoForm from "../TodoForm";
+import TodoForm from '../TodoForm';
+import { useNavigate } from 'react-router-dom';
 
 const TodoList = ({ setTodoCallback }) => {
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [todos, setTodos] = useState([]);
+
+	const navigate = useNavigate();
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -17,13 +20,25 @@ const TodoList = ({ setTodoCallback }) => {
 	}, []);
 
 	const loadAllTodos = async () => {
-		return fetch(`${process.env.REACT_APP_API_URL}/todos`)
-			.then((res) => res.json())
+		const authString = localStorage.getItem('authInfo');
+		const accessToken = authString && JSON.parse(authString).accessToken;
+		const headers = { 'Content-Type': 'application/json' };
+		if (accessToken) {
+			headers.Authorization = `Bearer ${accessToken}`;
+		}
+		fetch(`${process.env.REACT_APP_API_URL}/todos`, { headers })
+			.then((res) => {
+				if (res.status === 401) {
+					setError('Unauthorized');
+					navigate('/login');
+					return;
+				}
+				return res.json();
+			})
 			.then(
 				(result) => {
 					setIsLoaded(true);
 					setTodos(result);
-					return Promise.resolve(result);
 				},
 				// Note: it's important to handle errors here
 				// instead of a catch() block so that we don't swallow
@@ -42,17 +57,19 @@ const TodoList = ({ setTodoCallback }) => {
 			body: JSON.stringify({ name: input, isCompleted: false }),
 		};
 
-		fetch(`${process.env.REACT_APP_API_URL}/todos`, requestOptions).then(async (resp) => {
-			if (resp.ok) {
-				await loadAllTodos();
-			} else {
-				const data = await resp.json();
-				const error = (data && data.message) || resp.status;
-				await Promise.reject(error);
-			}
-		}).catch(error => {
-			setError(error);
-		});
+		fetch(`${process.env.REACT_APP_API_URL}/todos`, requestOptions)
+			.then(async (resp) => {
+				if (resp.ok) {
+					await loadAllTodos();
+				} else {
+					const data = await resp.json();
+					const error = (data && data.message) || resp.status;
+					await Promise.reject(error);
+				}
+			})
+			.catch((error) => {
+				setError(error);
+			});
 	};
 
 	const handleToggleTodoItem = (todo) => {
@@ -111,7 +128,7 @@ const TodoList = ({ setTodoCallback }) => {
 				<Navbar variant="light">
 					<Navbar.Brand>My Day</Navbar.Brand>
 				</Navbar>
-				<TodoForm handleCreateNewTodo={handleCreateNewTodo}/>
+				<TodoForm handleCreateNewTodo={handleCreateNewTodo} />
 				<ul className="todo-list">
 					{todos.map((todo) => (
 						<TodoItem

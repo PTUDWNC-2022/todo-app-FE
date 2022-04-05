@@ -1,0 +1,160 @@
+.todo-logo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 20px 0;
+}
+
+.todo-logo > h3 {
+	font-size: 30px;
+	font-weight: bold;
+	margin-left: 20px;
+	margin-top: 10px;
+	color: #253858;
+}
+
+.todo-login-container {
+	max-width: 400px;
+	background-color: #ffffff;
+	color: #5e6c84;
+	border-radius: 3px;
+	text-align: center;
+	padding: 25px 40px;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 0 10px;
+	overflow-y: visible;
+}
+
+.todo-login-container > h1 {
+	font-size: 16px;
+	line-height: 28px;
+	margin-bottom: 25px;
+}
+
+.todo-login-form {
+}
+
+.error {
+	border: 2px solid #ff6565;
+}
+
+.error-message {
+	color: #ff6565;
+	text-align: left;
+	padding: 0.5em 0.2em 0 0.2em;
+	font-size: 0.8em;
+}
+
+.todo-login-form .btn {
+	width: 100%;
+	font-weight: bolder;
+}
+
+.btn.forgot-password {
+	background-color: #fff;
+	color: #5e6c84;
+	border: none;
+	padding: 0;
+	margin-bottom: 20px;
+	float: right;
+	width: fit-content;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.login-method-separator {
+	font-size: 12px;
+	margin-top: 16px;
+	margin-bottom: 16px;
+}
+
+.oauth-btn {
+	background: #fff;
+	color: rgba(0, 0, 0, 0.54);
+	box-shadow: rgb(0 0 0 / 20%) 1px 1px 5px 0;
+	border: none;
+	border-radius: 3px;
+	width: 99%;
+	height: 39px;
+	padding-top: 0;
+	margin-bottom: 12px;
+}
+
+.oauth-btn:hover {
+	background-color: #f9fafc;
+	border-color: #f9fafc;
+	color: rgba(0, 0, 0, 0.54);
+}
+
+.oauth-btn .icon {
+	display: inline-block;
+	margin-right: 4px;
+	margin-bottom: -4px;
+	vertical-align: middle;
+}
+
+.oauth-btn span {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 14px;
+	font-family: inherit;
+	font-weight: bold;
+	color: #505f79;
+	padding: 3px;
+	height: 32px;
+	line-height: 32px;
+}
+
+#google-icon {
+	background: conic-gradient(
+			from -45deg,
+			#ea4335 110deg,
+			#4285f4 90deg 180deg,
+			#34a853 180deg 270deg,
+			#fbbc05 270deg
+		)
+		73% 55%/150% 150% no-repeat;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+}
+
+#facebook-icon {
+	color: blue;
+}
+
+.todo-background {
+	z-index: -900;
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
+
+hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid hsl(0, 0%, 80%);
+	margin: 1em 0;
+	padding: 0;
+}
+
+.todo-background > .todo-background-left > img {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: -999;
+	max-width: 30%;
+}
+
+.todo-background > .todo-background-right > img {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: -999;
+	max-width: 30%;
+}
