@@ -3,13 +3,13 @@ import { Container, Form, FormControl, Navbar } from 'react-bootstrap';
 
 import './NavHeader.css';
 
-const NavHeader = () => {
+const NavHeader = ({ user }) => {
 	return (
 		<Navbar bg="primary" variant="dark">
 			<Container fluid className="header">
 				<div className="header-left">
 					<button className="wrap-icon">
-						<i className="bi bi-grid-3x3-gap-fill icon"></i>
+						<i className="bi bi-grid-3x3-gap-fill icon"/>
 					</button>
 				</div>
 				<div className="header-center">
@@ -24,20 +24,21 @@ const NavHeader = () => {
 					</Form>
 					<div className="options">
 						<button className="wrap-icon">
-							<i className="bi bi-gear icon"></i>
+							<i className="bi bi-gear icon"/>
 						</button>
 						<button className="wrap-icon">
-							<i className="bi bi-question-lg icon"></i>
+							<i className="bi bi-question-lg icon"/>
 						</button>
 						<button className="wrap-icon">
-							<i className="bi bi-megaphone icon"></i>
+							<i className="bi bi-megaphone icon"/>
 						</button>
 					</div>
 				</div>
 				<div className="header-right">
-					<button className="wrap-icon">
-						<i className="bi bi-person-circle icon"></i>
-					</button>
+					<span>Hi, {user ? user.socialUser.fullName : ''}</span>
+					{user ? <img src={user.socialUser.picture} alt="user-picture" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '50%', marginLeft: '1rem' }}/> : <button className="wrap-icon">
+						<i className="bi bi-person-circle icon"/>
+					</button>}
 				</div>
 			</Container>
 		</Navbar>
