@@ -24,7 +24,7 @@ const Login = () => {
 
 	useEffect( () => {
 		const getUser = async () => {
-			const resp = await fetch('http://localhost:8080/users/login/success', {
+			const resp = await fetch(`${process.env.REACT_APP_API_URL}/users/login/success`, {
 				method: 'GET',
 				credentials: 'include',
 				headers: {
