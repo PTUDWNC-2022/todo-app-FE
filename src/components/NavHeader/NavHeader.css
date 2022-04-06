@@ -9,7 +9,6 @@
 	border: none;
 }
 
-
 .header-center {
 	display: flex;
 	flex: 1 1 auto;
@@ -30,4 +29,45 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
+}
+
+.profile-btn {
+	padding: 0 10px;
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing: 1px;
+	background-color: inherit;
+	/* border-color: none; */
+	border: none;
+	position: relative;
+}
+
+.profile-btn::after {
+	content: '';
+	border: none;
+}
+
+.profile-btn:hover {
+	background-color: darken(#ebecf0, 10);
+	border-color: darken(#ebecf0, 10);
+}
+
+.profile-menu.dropdown-menu.show {
+	padding: 5px 0;
+	min-width: 200px;
+	position: absolute;
+	top: 110%;
+	right: 0;
+	left: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 0 10px;
+}
+
+.dropdown-menu .dropdown-item {
+	padding: 8px 16px;
+	font-size: 14px;
+}
+
+.dropdown-item i {
+	font-size: 16px;
+	margin-right: 10px;
 }

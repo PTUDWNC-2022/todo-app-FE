@@ -1,9 +1,23 @@
 import React from 'react';
-import { Container, Form, FormControl, Navbar } from 'react-bootstrap';
+import {
+	Container,
+	Dropdown,
+	Form,
+	FormControl,
+	Navbar,
+} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import './NavHeader.css';
 
 const NavHeader = () => {
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		localStorage.removeItem('authInfo');
+		navigate('/login', { replace: true });
+	};
+
 	return (
 		<Navbar bg="primary" variant="dark">
 			<Container fluid className="header">
@@ -35,9 +49,24 @@ const NavHeader = () => {
 					</div>
 				</div>
 				<div className="header-right">
-					<button className="wrap-icon">
+					{/* <button className="wrap-icon">
 						<i className="bi bi-person-circle icon"></i>
-					</button>
+					</button> */}
+					<Dropdown className="wrap-icon">
+						<Dropdown.Toggle
+							id="dropdown-basic"
+							size="sm"
+							className="profile-btn">
+							<i className="bi bi-person-circle icon"></i>
+						</Dropdown.Toggle>
+
+						<Dropdown.Menu className="profile-menu">
+							<Dropdown.Item>Profile</Dropdown.Item>
+							<Dropdown.Item>Setting</Dropdown.Item>
+							<Dropdown.Divider />
+							<Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+						</Dropdown.Menu>
+					</Dropdown>
 				</div>
 			</Container>
 		</Navbar>

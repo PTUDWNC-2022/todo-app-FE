@@ -15,8 +15,8 @@ const RightSideBar = ({ todoDetail }) => {
 					ref.current &&
 					!ref.current.contains(event.target) &&
 					!event.target.classList.contains('todo-item') &&
-					!event.target.classList.contains('form-check-label') &&
-					!event.target.classList.contains('form-check-input')
+					!event.target.classList.contains('form-check-label')
+          // && !event.target.classList.contains('form-check-input')
 				) {
 					setExpand(false);
 				} else {

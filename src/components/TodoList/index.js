@@ -3,14 +3,12 @@ import { Navbar } from 'react-bootstrap';
 import TodoItem from '../TodoItem';
 import './TodoList.css';
 import TodoForm from '../TodoForm';
-import { useNavigate } from 'react-router-dom';
+import { authHeader } from '../../api/auth';
 
 const TodoList = ({ setTodoCallback }) => {
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [todos, setTodos] = useState([]);
-
-	const navigate = useNavigate();
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -20,17 +18,12 @@ const TodoList = ({ setTodoCallback }) => {
 	}, []);
 
 	const loadAllTodos = async () => {
-		const authString = localStorage.getItem('authInfo');
-		const accessToken = authString && JSON.parse(authString).accessToken;
-		const headers = { 'Content-Type': 'application/json' };
-		if (accessToken) {
-			headers.Authorization = `Bearer ${accessToken}`;
-		}
-		fetch(`${process.env.REACT_APP_API_URL}/todos`, { headers })
+		const fetchResult = fetch(`${process.env.REACT_APP_API_URL}/todos`, {
+			headers: authHeader(),
+		})
 			.then((res) => {
 				if (res.status === 401) {
-					setError('Unauthorized');
-					navigate('/login');
+					setError({ message: 'Unauthorized' });
 					return;
 				}
 				return res.json();
@@ -39,6 +32,7 @@ const TodoList = ({ setTodoCallback }) => {
 				(result) => {
 					setIsLoaded(true);
 					setTodos(result);
+					return Promise.resolve(result);
 				},
 				// Note: it's important to handle errors here
 				// instead of a catch() block so that we don't swallow
@@ -48,12 +42,13 @@ const TodoList = ({ setTodoCallback }) => {
 					setError(error);
 				}
 			);
+		return fetchResult;
 	};
 
 	const handleCreateNewTodo = (input) => {
 		const requestOptions = {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: authHeader(),
 			body: JSON.stringify({ name: input, isCompleted: false }),
 		};
 
@@ -78,7 +73,7 @@ const TodoList = ({ setTodoCallback }) => {
 
 		const requestOptions = {
 			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
+			headers: authHeader(),
 			body: JSON.stringify({ isCompleted: !isCompleted }),
 		};
 
@@ -86,6 +81,7 @@ const TodoList = ({ setTodoCallback }) => {
 			.then(async (response) => {
 				if (response.ok) {
 					const result = await loadAllTodos();
+					console.log(result);
 					setTodoCallback(result.find((item) => item._id === id));
 				} else {
 					const data = await response.json();
@@ -104,7 +100,10 @@ const TodoList = ({ setTodoCallback }) => {
 		const id = todo._id;
 
 		//Call API
-		fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, { method: 'DELETE' })
+		fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, {
+			method: 'DELETE',
+			headers: authHeader(),
+		})
 			.then((res) => res.json())
 			.then(
 				(result) => {
