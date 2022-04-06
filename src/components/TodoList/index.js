@@ -4,11 +4,13 @@ import TodoItem from '../TodoItem';
 import './TodoList.css';
 import TodoForm from '../TodoForm';
 import { authHeader } from '../../api/auth';
+import {useNavigate} from "react-router-dom";
 
 const TodoList = ({ setTodoCallback }) => {
 	const [error, setError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [todos, setTodos] = useState([]);
+	const navigate = useNavigate();
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -24,6 +26,7 @@ const TodoList = ({ setTodoCallback }) => {
 			.then((res) => {
 				if (res.status === 401) {
 					setError({ message: 'Unauthorized' });
+					navigate('login');
 					return;
 				}
 				return res.json();

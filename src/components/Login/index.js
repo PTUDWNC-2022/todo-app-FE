@@ -42,8 +42,13 @@ const Login = () => {
 			}
 			throw new Error('Login with Google has been failed');
 		};
+		const currentUser = JSON.parse(localStorage.getItem('authInfo')) || null;
+		if (currentUser) {
+			navigate('/', { replace: true });
+			return;
+		}
 		getUser();
-	}, [navigate]);
+	}, []);
 
 	return (
 		<Container fluid className="login-container">

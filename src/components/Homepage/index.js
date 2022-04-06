@@ -21,7 +21,7 @@ const Homepage = () => {
         } else {
             navigate('login');
         }
-    }, [navigate]);
+    }, []);
 
   return (
       <ThemeProvider

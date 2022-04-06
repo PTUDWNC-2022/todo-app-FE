@@ -15,7 +15,7 @@ const NavHeader = ({ user }) => {
 
 	const handleLogout = () => {
 		localStorage.removeItem('authInfo');
-		navigate('/login', { replace: true });
+		window.open(`${process.env.REACT_APP_API_URL}/users/logout`, '_self');
 	};
 
 	return (
@@ -49,26 +49,13 @@ const NavHeader = ({ user }) => {
 					</div>
 				</div>
 				<div className="header-right">
-					{/* <span>Hi, {user ? user.socialUser.fullName : ''}</span> */}
-					{user && user.socialUser ? (
-						<img
-							src={user.socialUser.picture}
-							alt="user-picture"
-							style={{
-								width: '32px',
-								height: '32px',
-								objectFit: 'cover',
-								borderRadius: '50%',
-								marginLeft: '1rem',
-							}}
-						/>
-					) : (
+					<span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{user ? `Hi, ${user.socialUser ? user.socialUser.fullName : user.user.email}` : 'Login'}</span>
 						<Dropdown className="wrap-icon">
 							<Dropdown.Toggle
 								id="dropdown-basic"
 								size="sm"
 								className="profile-btn">
-								<i className="bi bi-person-circle icon"></i>
+								{user && user.socialUser ? <img src={user.socialUser.picture} alt="user-picture" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '50%' }}/> : <i className="bi bi-person-circle icon"></i>}
 							</Dropdown.Toggle>
 
 							<Dropdown.Menu className="profile-menu">
@@ -78,7 +65,6 @@ const NavHeader = ({ user }) => {
 								<Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown>
-					)}
 				</div>
 			</Container>
 		</Navbar>
