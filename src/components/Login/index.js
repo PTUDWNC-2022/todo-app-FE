@@ -1,5 +1,5 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React, {useEffect} from 'react';
+import {Formik} from 'formik';
 import { login } from './actions';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -21,6 +21,29 @@ const validationSchema = yup.object({
 
 const Login = () => {
 	const navigate = useNavigate();
+
+	useEffect( () => {
+		const getUser = async () => {
+			const resp = await fetch('http://localhost:8080/users/login/success', {
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Credentials': true
+				}
+			});
+
+			if (resp.status === 200) {
+				const userJson = await resp.json();
+				localStorage.setItem('authInfo', JSON.stringify(userJson.user));
+				navigate('/', { replace: true });
+				return;
+			}
+			throw new Error('Login with Google has been failed');
+		};
+		getUser();
+	}, [navigate]);
 
 	return (
 		<Container fluid className="login-container">
@@ -92,12 +115,12 @@ const Login = () => {
 					</Formik>
 					<div className="login-methods">
 						<div className="login-method-separator">OR</div>
-						<Button className="oauth-btn">
-							<i className="bi bi-google icon" id="google-icon"></i>
+						<Button className="oauth-btn" onClick={() => window.open(`${process.env.REACT_APP_API_URL}/users/google/`, '_self')}>
+							<i className="bi bi-google icon" id="google-icon"/>
 							<span>Continue with Google</span>
 						</Button>
-						<Button className="oauth-btn">
-							<i className="bi bi-facebook icon" id="facebook-icon"></i>
+						<Button className="oauth-btn" onClick={() => window.open(`${process.env.REACT_APP_API_URL}/users/facebook/`, '_self')}>
+							<i className="bi bi-facebook icon" id="facebook-icon"/>
 							<span>Continue with Facebook</span>
 						</Button>
 					</div>

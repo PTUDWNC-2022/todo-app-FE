@@ -81,7 +81,6 @@ const TodoList = ({ setTodoCallback }) => {
 			.then(async (response) => {
 				if (response.ok) {
 					const result = await loadAllTodos();
-					console.log(result);
 					setTodoCallback(result.find((item) => item._id === id));
 				} else {
 					const data = await response.json();
