@@ -39,3 +39,20 @@
     border: 1px solid black;
     background-color: white;
 }
+
+.due-date-card:hover {
+    background-color: #e5e5e5;
+}
+
+.due-date-card:hover input {
+    background-color: #e5e5e5;
+}
+
+.due-date-card:hover .close-button {
+    display: flex !important;
+    align-items: center;
+}
+
+.note {
+    
+}
