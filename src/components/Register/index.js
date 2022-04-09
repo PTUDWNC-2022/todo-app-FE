@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import { register } from './actions';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { login } from '../Login/actions';
 
 const validationSchema = yup.object({
 	email: yup
@@ -19,6 +20,7 @@ const validationSchema = yup.object({
 });
 
 const Register = () => {
+	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	return (
 		<Container fluid className="login-container">
@@ -37,8 +39,14 @@ const Register = () => {
 						initialValues={{ email: '', password: '' }}
 						validationSchema={validationSchema}
 						onSubmit={async (values, { setSubmitting }) => {
-							await register(values.email, values.password);
-							navigate('/login');
+							const result = await register(values.email, values.password);
+							if (!result.errors) {
+								const authInfo = await login(values.email, values.password);
+								localStorage.setItem('authInfo', JSON.stringify(authInfo));
+								navigate('/');
+							} else {
+								setError(result.errors);
+							}
 						}}>
 						{({
 							values,
@@ -50,6 +58,12 @@ const Register = () => {
 							isSubmitting,
 						}) => (
 							<Form onSubmit={handleSubmit} className="todo-login-form">
+								{error && (
+									<Alert variant="danger">
+										<Alert.Heading>This email already in use!</Alert.Heading>
+										<div>{error}</div>
+									</Alert>
+								)}
 								<Form.Group className="mb-3" controlId="formEmail">
 									<Form.Control
 										type="text"

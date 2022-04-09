@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
-import {Formik} from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Formik } from 'formik';
 import { login } from './actions';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 
 import './Login.css';
 
@@ -20,19 +20,23 @@ const validationSchema = yup.object({
 });
 
 const Login = () => {
+	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 
-	useEffect( () => {
+	useEffect(() => {
 		const getUser = async () => {
-			const resp = await fetch(`${process.env.REACT_APP_API_URL}/users/login/success`, {
-				method: 'GET',
-				credentials: 'include',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-					'Access-Control-Allow-Credentials': true
+			const resp = await fetch(
+				`${process.env.REACT_APP_API_URL}/users/login/success`,
+				{
+					method: 'GET',
+					credentials: 'include',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Credentials': true,
+					},
 				}
-			});
+			);
 
 			if (resp.status === 200) {
 				const userJson = await resp.json();
@@ -68,8 +72,12 @@ const Login = () => {
 						validationSchema={validationSchema}
 						onSubmit={async (values, { setSubmitting }) => {
 							const authInfo = await login(values.email, values.password);
-							localStorage.setItem('authInfo', JSON.stringify(authInfo));
-							navigate('/');
+							if (authInfo.user) {
+								localStorage.setItem('authInfo', JSON.stringify(authInfo));
+								navigate('/');
+							} else {
+								setError(authInfo.errors);
+							}
 						}}>
 						{({
 							values,
@@ -81,6 +89,12 @@ const Login = () => {
 							isSubmitting,
 						}) => (
 							<Form onSubmit={handleSubmit} className="todo-login-form">
+								{error && (
+									<Alert variant="danger">
+										<Alert.Heading>There was a problem!</Alert.Heading>
+										<div>{error}</div>
+									</Alert>
+								)}
 								<Form.Group className="mb-3" controlId="formEmail">
 									<Form.Control
 										type="text"
@@ -120,12 +134,26 @@ const Login = () => {
 					</Formik>
 					<div className="login-methods">
 						<div className="login-method-separator">OR</div>
-						<Button className="oauth-btn" onClick={() => window.open(`${process.env.REACT_APP_API_URL}/users/google/`, '_self')}>
-							<i className="bi bi-google icon" id="google-icon"/>
+						<Button
+							className="oauth-btn"
+							onClick={() =>
+								window.open(
+									`${process.env.REACT_APP_API_URL}/users/google/`,
+									'_self'
+								)
+							}>
+							<i className="bi bi-google icon" id="google-icon" />
 							<span>Continue with Google</span>
 						</Button>
-						<Button className="oauth-btn" onClick={() => window.open(`${process.env.REACT_APP_API_URL}/users/facebook/`, '_self')}>
-							<i className="bi bi-facebook icon" id="facebook-icon"/>
+						<Button
+							className="oauth-btn"
+							onClick={() =>
+								window.open(
+									`${process.env.REACT_APP_API_URL}/users/facebook/`,
+									'_self'
+								)
+							}>
+							<i className="bi bi-facebook icon" id="facebook-icon" />
 							<span>Continue with Facebook</span>
 						</Button>
 					</div>
