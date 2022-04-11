@@ -1,18 +1,17 @@
 import "./RightsideBar.css";
 import { Card, Col, Form, Row } from "react-bootstrap";
-import React, { useEffect, useRef, useState } from "react";
-import Datetime from "react-datetime";
-import "react-datetime/css/react-datetime.css";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import DatePicker from 'react-date-picker';
+import { TodoContext } from "../../contexts/TodoContext";
+import TodoAPI from "../../api/todo.api";
 
-const RightSideBar = ({ todoDetail }) => {
+const RightSideBar = () => {
+  const todoContext = useContext(TodoContext);
   const [expand, setExpand] = useState(false);
-  const [todoName, setTodoName] = useState("");
+  const chosenTodo = todoContext.chosenTodo;
 
   function useOutsideAlerter(ref) {
     useEffect(() => {
-      // Update current todo
-      setTodoName(todoDetail.name);
-
       /**
        * If clicked on outside of element
        */
@@ -36,14 +35,86 @@ const RightSideBar = ({ todoDetail }) => {
         // Unbind the event listener on clean up
         document.removeEventListener("mousedown", handleClickOutside);
       };
-    }, [ref, todoDetail]);
+    }, [ref]);
   }
 
   const containerRef = useRef(null);
   useOutsideAlerter(containerRef);
 
-  const onFocusOut = (event) => {
-    setTodoName(event.currentTarget.textContent);
+  const onFocusOut = async (event, field) => {
+    if (event.currentTarget.textContent === chosenTodo.name) return;
+    try {
+      const response = await TodoAPI.handleUpdateTodoItem({
+        ...chosenTodo,
+        [field]: event.currentTarget.textContent,
+
+      });
+      if (response.ok) {
+        const result = await TodoAPI.loadAllTodos();
+        const jsonResult = await result.json();
+        todoContext.setTodosList(jsonResult);
+        todoContext.setChosenTodo(
+          jsonResult.find((item) => item._id === chosenTodo._id)
+        );
+      } else {
+        const data = await response.json();
+        const error = (data && data.message) || response.status;
+        await Promise.reject(error);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onToggleTodo = async () => {
+    try {
+      const response = await TodoAPI.handleUpdateTodoItem({
+        ...chosenTodo,
+        isCompleted: !chosenTodo.isCompleted,
+      });
+      if (response.ok) {
+        const result = await TodoAPI.loadAllTodos();
+        const jsonResult = await result.json();
+        todoContext.setTodosList(jsonResult);
+        todoContext.setChosenTodo(
+          jsonResult.find((item) => item._id === chosenTodo._id)
+        );
+      } else {
+        const data = await response.json();
+        const error = (data && data.message) || response.status;
+        await Promise.reject(error);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // Customize React-Datetime
+  const updateDatetime = async (value) => {
+    try {
+      const response = await TodoAPI.handleUpdateTodoItem({
+        ...chosenTodo,
+        dueDate: value,
+      });
+      if (response.ok) {
+        const result = await TodoAPI.loadAllTodos();
+        const jsonResult = await result.json();
+        todoContext.setTodosList(jsonResult);
+        todoContext.setChosenTodo(
+          jsonResult.find((item) => item._id === chosenTodo._id)
+        );
+      } else {
+        const data = await response.json();
+        const error = (data && data.message) || response.status;
+        await Promise.reject(error);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onDateChanged = async (date) => {
+    await updateDatetime(!date ? date : date.toISOString());
   };
 
   return (
@@ -56,20 +127,26 @@ const RightSideBar = ({ todoDetail }) => {
           <Col xl={1} className="d-flex align-items-center">
             <Form.Check
               type="checkbox"
-              checked={todoDetail.isCompleted}
-              onChange={() => {}}
+              checked={chosenTodo && chosenTodo.isCompleted}
+              onChange={onToggleTodo}
             />
           </Col>
           <Col xl={11}>
             <span
               role="textbox"
               dangerouslySetInnerHTML={{
-                __html: todoName ? todoName.toString() : "",
+                __html: chosenTodo ? chosenTodo.name : "",
               }}
               contentEditable
               type="text"
               className="todo-name"
-              onBlur={onFocusOut}
+              onBlur={(event) => onFocusOut(event, 'name')}
+              style={{
+                textDecoration:
+                  chosenTodo && chosenTodo.isCompleted
+                    ? "line-through"
+                    : "none",
+              }}
             />
           </Col>
         </Row>
@@ -82,29 +159,32 @@ const RightSideBar = ({ todoDetail }) => {
                 <i className="bi bi-calendar-check" />
               </div>
             </Col>
-            <Col xl={10}>
-              <Datetime
-                inputProps={{
-                  placeholder: "Add due date",
-                  style: {
-                    border: "none",
-                    outline: "none",
-                    boxShadow: "none",
-                    color: "rgb(13, 110, 253)",
-                  },
-                }}
+            <Col xl={11}>
+              <DatePicker
+                  onChange={onDateChanged}
+                  value={chosenTodo && chosenTodo.dueDate && new Date(chosenTodo.dueDate)}
+                  calendarIcon={null}
+                  minDate={new Date()}
+                  className='date-picker'
+                  format='dd/MMM/yyyy'
               />
-            </Col>
-            <Col xl={1} className="close-button d-none">
-              <i className="bi bi-x" />
             </Col>
           </Row>
         </Card.Body>
       </Card>
       <Card>
         <Card.Body>
-          <p>Add note</p>
-          <textarea className="note"></textarea>
+          <span
+            role="textbox"
+            type="text"
+            className="note"
+            contentEditable
+            data-placeholder="Add note"
+            dangerouslySetInnerHTML={{
+              __html: chosenTodo ? chosenTodo.note : ""
+            }}
+            onBlur={(event) => onFocusOut(event, 'note')}
+          />
         </Card.Body>
       </Card>
     </div>

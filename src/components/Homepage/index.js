@@ -6,13 +6,8 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 const Homepage = () => {
-    const [todo, setTodo] = useState({});
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-
-    const setTodoCallback = (todo) => {
-        setTodo(todo);
-    };
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('authInfo')) || null;
@@ -31,10 +26,10 @@ const Homepage = () => {
               <Row>
                   <Col md={4}>{/*<Sidebar />*/}</Col>
                   <Col md={8}>
-                      <TodoList setTodoCallback={setTodoCallback} />
+                      <TodoList />
                   </Col>
               </Row>
-              <RightSideBar todoDetail={todo} />
+              <RightSideBar />
           </Container>
       </ThemeProvider>
   );
