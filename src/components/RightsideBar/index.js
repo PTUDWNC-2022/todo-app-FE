@@ -45,7 +45,7 @@ const RightSideBar = () => {
     if (
       (event.currentTarget.textContent === chosenTodo.name &&
         field === "name") ||
-      (event.currentTarget.textContent === chosenTodo.name && field === "note")
+      (event.currentTarget.textContent === chosenTodo.note && field === "note")
     )
       return;
     try {
