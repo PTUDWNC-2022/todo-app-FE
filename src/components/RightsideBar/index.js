@@ -1,7 +1,7 @@
 import "./RightsideBar.css";
 import { Card, Col, Form, Row } from "react-bootstrap";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import DatePicker from 'react-date-picker';
+import DatePicker from "react-date-picker";
 import { TodoContext } from "../../contexts/TodoContext";
 import TodoAPI from "../../api/todo.api";
 
@@ -42,12 +42,16 @@ const RightSideBar = () => {
   useOutsideAlerter(containerRef);
 
   const onFocusOut = async (event, field) => {
-    if (event.currentTarget.textContent === chosenTodo.name) return;
+    if (
+      (event.currentTarget.textContent === chosenTodo.name &&
+        field === "name") ||
+      (event.currentTarget.textContent === chosenTodo.name && field === "note")
+    )
+      return;
     try {
       const response = await TodoAPI.handleUpdateTodoItem({
         ...chosenTodo,
         [field]: event.currentTarget.textContent,
-
       });
       if (response.ok) {
         const result = await TodoAPI.loadAllTodos();
@@ -140,7 +144,7 @@ const RightSideBar = () => {
               contentEditable
               type="text"
               className="todo-name"
-              onBlur={(event) => onFocusOut(event, 'name')}
+              onBlur={(event) => onFocusOut(event, "name")}
               style={{
                 textDecoration:
                   chosenTodo && chosenTodo.isCompleted
@@ -161,12 +165,16 @@ const RightSideBar = () => {
             </Col>
             <Col xl={11}>
               <DatePicker
-                  onChange={onDateChanged}
-                  value={chosenTodo && chosenTodo.dueDate && new Date(chosenTodo.dueDate)}
-                  calendarIcon={null}
-                  minDate={new Date()}
-                  className='date-picker'
-                  format='dd/MMM/yyyy'
+                onChange={onDateChanged}
+                value={
+                  chosenTodo &&
+                  chosenTodo.dueDate &&
+                  new Date(chosenTodo.dueDate)
+                }
+                calendarIcon={null}
+                minDate={new Date()}
+                className="date-picker"
+                format="dd/MMM/yyyy"
               />
             </Col>
           </Row>
@@ -181,9 +189,9 @@ const RightSideBar = () => {
             contentEditable
             data-placeholder="Add note"
             dangerouslySetInnerHTML={{
-              __html: chosenTodo ? chosenTodo.note : ""
+              __html: chosenTodo ? chosenTodo.note : "",
             }}
-            onBlur={(event) => onFocusOut(event, 'note')}
+            onBlur={(event) => onFocusOut(event, "note")}
           />
         </Card.Body>
       </Card>
