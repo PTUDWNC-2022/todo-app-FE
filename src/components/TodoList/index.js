@@ -138,6 +138,7 @@ const TodoList = () => {
               key={todo._id}
               name={todo.name}
               isCompleted={todo.isCompleted}
+              priority={todo.priority}
               onToggle={() => handleToggleTodoItem(todo)}
               onTodoClicked={() => handleViewTodoDetail(todo)}
               onTodoDelete={() => handleDeleteTodo(todo)}

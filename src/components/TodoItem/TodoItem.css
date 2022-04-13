@@ -20,6 +20,10 @@
 	background-color: #ededed;
 }
 
+.todo-item .priority > i {
+	margin-right: 5px;
+}
+
 .checked-item .form-check-label {
 	text-decoration: line-through;
 }
