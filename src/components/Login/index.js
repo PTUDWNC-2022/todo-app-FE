@@ -29,7 +29,7 @@ const Login = () => {
 				`${process.env.REACT_APP_API_URL}/users/login/success`,
 				{
 					method: 'GET',
-					credentials: true,
+					credentials: 'include',
 					headers: {
 						Accept: 'application/json',
 						'Content-Type': 'application/json',

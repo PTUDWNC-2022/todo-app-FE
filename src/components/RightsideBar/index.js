@@ -9,7 +9,6 @@ import { priorityList } from '../../constants/priorities';
 const RightSideBar = () => {
 	const todoContext = useContext(TodoContext);
 	const chosenTodo = todoContext.chosenTodo;
-	const [expand, setExpand] = useState(false);
 	const [showPriority, setShowPriority] = useState(false);
 
 	function useOutsideAlerter(ref) {
@@ -18,17 +17,21 @@ const RightSideBar = () => {
 			 * If clicked on outside of element
 			 */
 			function handleClickOutside(event) {
+				event.stopPropagation();
 				if (
 					ref.current &&
 					!ref.current.contains(event.target) &&
 					!event.target.classList.contains('todo-item') &&
 					!event.target.classList.contains('form-check-label') &&
-					!event.target.classList.contains('form-check-input')
+					!event.target.classList.contains('form-check-input') &&
+					!event.target.classList.contains('dropdown-btn') &&
+					!event.target.classList.contains('dropdown-toggle') &&
+					!event.target.classList.contains('dropdown-item')
 				) {
-					setExpand(false);
+					todoContext.setExpand(false);
 					setShowPriority(false);
 				} else {
-					setExpand(true);
+					todoContext.setExpand(true);
 				}
 			}
 
@@ -137,7 +140,6 @@ const RightSideBar = () => {
 				todoContext.setChosenTodo(
 					jsonResult.find((item) => item._id === chosenTodo._id)
 				);
-				console.log('saved');
 			} else {
 				const data = await response.json();
 				const error = (data && data.message) || response.status;
@@ -150,7 +152,7 @@ const RightSideBar = () => {
 
 	return (
 		<div
-			className={`container w-25 ${!expand ? 'collapse-container' : ''}`}
+			className={`container w-25 ${!todoContext.expand ? 'collapse-container' : ''}`}
 			ref={containerRef}>
 			<Card body>
 				<Row>

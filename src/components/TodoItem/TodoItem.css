@@ -12,6 +12,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	transition: all 0.5s ease-in-out;
 }
 
 .todo-item:hover,
@@ -67,4 +68,8 @@
 .delete-task,
 .delete-task:hover {
 	color: red;
+}
+
+.expand-item {
+	width: calc(100% - 468px);
 }

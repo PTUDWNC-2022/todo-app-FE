@@ -5,12 +5,15 @@ const TodoContext = createContext(null);
 const TodoProvider = ({ children }) => {
   const [chosenTodo, setChosenTodo] = useState(null);
   const [todosList, setTodosList] = useState([]);
+  const [expand, setExpand] = useState(false);
 
   const value = {
     chosenTodo,
     setChosenTodo,
     todosList,
-    setTodosList
+    setTodosList,
+    expand,
+    setExpand
   };
 
   return (

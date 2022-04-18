@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { Dropdown, Form } from 'react-bootstrap';
 import { priorityList } from '../../constants/priorities';
 import ConfirmModal from '../CommonModal/ConfirmModal';
 
 import './TodoItem.css';
+import {TodoContext} from "../../contexts/TodoContext";
 
 const TodoItem = ({
 	name,
@@ -14,6 +15,7 @@ const TodoItem = ({
 	onTodoDelete,
 }) => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const todoContext = useContext(TodoContext);
 
 	const toggleShowConfirmModal = () => setShowConfirmModal(!showConfirmModal);
 
@@ -26,7 +28,7 @@ const TodoItem = ({
 
 	return (
 		<li
-			className={`todo-item ${isCompleted ? 'checked-item' : ''}`}
+			className={`todo-item ${isCompleted ? 'checked-item' : ''} ${todoContext.expand ? 'expand-item' : ''}`}
 			onClick={onTodoClicked}>
 			<Form.Check
 				type="checkbox"
