@@ -4,6 +4,7 @@ import TodoList from "../TodoList";
 import RightSideBar from "../RightsideBar";
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import Sidebar from "../Sidebar";
 
 const Homepage = () => {
     const [user, setUser] = useState(null);
@@ -24,7 +25,7 @@ const Homepage = () => {
           <NavHeader user={user}/>
           <Container fluid>
               <Row>
-                  <Col md={4}>{/*<Sidebar />*/}</Col>
+                  <Col md={4}>{<Sidebar />}</Col>
                   <Col md={8}>
                       <TodoList />
                   </Col>

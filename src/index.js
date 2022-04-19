@@ -5,11 +5,14 @@ import "./index.css";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import { TodoProvider } from "./contexts/TodoContext";
+import {LabelProvider} from "./contexts/LabelContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <TodoProvider>
-      <App />
+      <LabelProvider>
+        <App />
+      </LabelProvider>
     </TodoProvider>
   </React.StrictMode>,
   document.getElementById("root")

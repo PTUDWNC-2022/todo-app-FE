@@ -1,8 +1,11 @@
 import { Form } from "react-bootstrap";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {TodoContext} from "../../contexts/TodoContext";
+import './TodoForm.css';
 
 const TodoForm = ({ handleCreateNewTodo }) => {
     const [input, setInput] = useState('');
+    const todoContext = useContext(TodoContext);
 
     const handleEnter = (event) => {
         if (event.key === 'Enter') {
@@ -24,6 +27,7 @@ const TodoForm = ({ handleCreateNewTodo }) => {
               id="inputTodoName"
               onKeyPress={handleEnter}
               onChange={handleInput}
+              className={todoContext.expand ? 'expand' : ''}
           />
       </>
   );
