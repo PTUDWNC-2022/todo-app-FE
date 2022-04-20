@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Navbar } from 'react-bootstrap';
 import TodoItem from '../TodoItem';
 import './TodoList.css';
 import TodoForm from '../TodoForm';
@@ -9,7 +8,7 @@ import { TodoContext } from '../../contexts/TodoContext';
 import TodoAPI from '../../api/todo.api';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { mapOrder } from '../../utilities/sort';
-import { cloneDeep } from 'lodash';
+import ToolBar from '../ToolBar';
 
 const TodoList = () => {
 	const [error, setError] = useState(null);
@@ -42,7 +41,6 @@ const TodoList = () => {
 					todoContext.setTodosList(
 						mapOrder(board.todos, board.todoOrder, '_id')
 					);
-					console.log(board);
 					return Promise.resolve(board);
 				},
 				// Note: it's important to handle errors here
@@ -185,9 +183,7 @@ const TodoList = () => {
 	} else {
 		return (
 			<>
-				<Navbar variant="light">
-					<Navbar.Brand>My Day</Navbar.Brand>
-				</Navbar>
+				<ToolBar />
 				<TodoForm handleCreateNewTodo={handleCreateNewTodo} />
 				<DragDropContext onDragEnd={onDragEnd}>
 					<Droppable droppableId="droppable">

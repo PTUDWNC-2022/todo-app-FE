@@ -25,8 +25,8 @@ const RightSideBar = () => {
 					event.target.classList.contains('form-check-label') ||
 					event.target.classList.contains('form-check-input') ||
 					event.target.classList.contains('dropdown-btn') ||
-					event.target.classList.contains('dropdown-toggle') ||
-					event.target.classList.contains('dropdown-item') ||
+					event.target.classList.contains('dropdown-todo-item') ||
+					event.target.classList.contains('priority') ||
 					(event.target.classList.contains('form-control') &&
 						todoContext.expand)
 				) {
@@ -267,6 +267,14 @@ const RightSideBar = () => {
 					))}
 				</Form.Group>
 			)}
+			<div className="rightbar-footer">
+				<span>
+					Created on{' '}
+					{chosenTodo && chosenTodo.createdDate
+						? new Date(chosenTodo.createdDate).toLocaleDateString('en-GB')
+						: ''}
+				</span>
+			</div>
 		</div>
 	);
 };

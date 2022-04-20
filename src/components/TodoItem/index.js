@@ -62,7 +62,7 @@ const TodoItem = ({
 						onChange={onToggle}
 					/>
 					{priorityList.map((p) =>
-						priority && p.name === priority ? (
+						priority && p.name === priority && priority!== 'None' ? (
 							<div style={{ color: p.color }} className="priority">
 								<i className="bi bi-flag-fill"></i>
 								{priority}
@@ -79,21 +79,21 @@ const TodoItem = ({
 							/>
 
 							<Dropdown.Menu>
-								<Dropdown.Item>
+								<Dropdown.Item className="dropdown-todo-item">
 									<i className="bi bi-brightness-high" />
 									Remove from My Day
 								</Dropdown.Item>
-								<Dropdown.Item>
+								<Dropdown.Item className="dropdown-todo-item">
 									<i className="bi bi-star" />
 									Mark as important
 								</Dropdown.Item>
-								<Dropdown.Item>
+								<Dropdown.Item className="dropdown-todo-item">
 									<i className="bi bi-check-circle" />
 									Mark as completed
 								</Dropdown.Item>
 								<Dropdown.Item
 									onClick={toggleShowConfirmModal}
-									className="delete-task">
+									className="dropdown-todo-item delete-task">
 									<i className="bi bi-trash3" />
 									Delete task
 								</Dropdown.Item>
