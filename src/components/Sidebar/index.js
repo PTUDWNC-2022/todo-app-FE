@@ -6,8 +6,16 @@ import { authHeader } from "../../api/auth";
 import { LabelContext } from "../../contexts/LabelContext";
 
 const Sidebar = () => {
+  const defaultLabels = [
+    "My day",
+    "Important",
+    "Planned",
+    "Assigned to me",
+    "Flagged email",
+    "Task",
+  ];
   const [newLabel, setNewLabel] = useState("");
-  const [labels, setLabels] = useState(['My day', 'Important', 'Planned', 'Assigned to me', 'Flagged email', 'Task']);
+  const [labels, setLabels] = useState([]);
   const labelContext = useContext(LabelContext);
 
   const fetchLabels = async () => {
@@ -23,9 +31,9 @@ const Sidebar = () => {
 
     labelContext.setDocumentId(respJson.insertedId || respJson._id);
     labelContext.setLabels(
-      respJson.insertedId ? [] : respJson.additionalLabels
+      respJson.insertedId ? [] : [...defaultLabels, ...respJson.additionalLabels]
     );
-    // setLabels([...labels, ...respJson.additionalLabels]);
+    setLabels([...defaultLabels, ...respJson.additionalLabels]);
   };
 
   useEffect(() => {
@@ -36,15 +44,31 @@ const Sidebar = () => {
     setNewLabel(event.target.value);
   };
 
-  const handleEnter = async (event) => {
-    if (event.key === "Enter") {
-      await fetch(`${process.env.REACT_APP_API_URL}/labels/new-label`, {
-        method: 'PUT',
+  const handleRemoveLabel = async (label) => {
+    try {
+      await fetch(`${process.env.REACT_APP_API_URL}/labels/remove-label`, {
+        method: "PUT",
         headers: authHeader(),
         body: JSON.stringify({
           documentId: labelContext.documentId,
-          newLabel
-        })
+          label: label.trim(),
+        }),
+      });
+      await fetchLabels();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleEnter = async (event) => {
+    if (event.key === "Enter") {
+      await fetch(`${process.env.REACT_APP_API_URL}/labels/new-label`, {
+        method: "PUT",
+        headers: authHeader(),
+        body: JSON.stringify({
+          documentId: labelContext.documentId,
+          newLabel: newLabel.trim(),
+        }),
       });
       await fetchLabels();
       setNewLabel("");
@@ -78,13 +102,25 @@ const Sidebar = () => {
           <i className="bi bi-house"></i>
           <span className={"label-name"}>Task</span>
         </ListGroup.Item>
-        {labels.slice(6).map(label => {
-          return (
-            <ListGroup.Item className={"label-item"} action>
-              <span className={"label-name"}>{label}</span>
-            </ListGroup.Item>
-          );
-        })}
+        {labels
+          .slice(6)
+          .sort()
+          .map((label) => {
+            return (
+              <ListGroup.Item className={"additional-label"} action>
+                <div>
+                  <i className="bi bi-tags"></i>
+                  <span className={"label-name"}>{label}</span>
+                </div>
+                <span className={"remove-label"}>
+                  <i
+                    className="bi bi-x-circle"
+                    onClick={() => handleRemoveLabel(label)}
+                  ></i>
+                </span>
+              </ListGroup.Item>
+            );
+          })}
       </ListGroup>
       <FloatingLabel
         controlId={"floatingInput"}
