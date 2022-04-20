@@ -15,8 +15,7 @@
 	transition: all 0.5s ease-in-out;
 }
 
-.todo-item:hover,
-.todo-item:hover label {
+.todo-item:hover {
 	cursor: pointer;
 	background-color: #ededed;
 }

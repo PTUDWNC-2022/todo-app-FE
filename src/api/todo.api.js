@@ -3,7 +3,7 @@ import {authHeader} from "./auth";
 const loadAllTodos = () => {
     const userId = JSON.parse(localStorage.getItem("authInfo")).user._id;
     return fetch(
-        `${process.env.REACT_APP_API_URL}/todos/${userId}`,
+        `${process.env.REACT_APP_API_URL}/user/${userId}`,
         {
             headers: authHeader(),
         }
