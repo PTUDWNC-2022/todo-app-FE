@@ -8,8 +8,8 @@ import { priorityList } from "../../constants/priorities";
 import { mapOrder } from "../../utilities/sort";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { LabelContext } from "../../contexts/LabelContext";
-import 'react-bootstrap-typeahead/css/Typeahead.css';
-import {authHeader} from "../../api/auth";
+import "react-bootstrap-typeahead/css/Typeahead.css";
+import { authHeader } from "../../api/auth";
 
 const RightSideBar = () => {
   const todoContext = useContext(TodoContext);
@@ -29,8 +29,10 @@ const RightSideBar = () => {
           event.target.classList.contains("todo-item") ||
           event.target.classList.contains("form-check-label") ||
           event.target.classList.contains("form-check-input") ||
-          event.target.classList.contains("dropdown-btn") ||
-          event.target.classList.contains("dropdown-todo-item") ||
+          (event.target.classList.contains("dropdown-btn") &&
+            !event.target.classList.contains("list-menu")) ||
+          (event.target.classList.contains("dropdown-todo-item") &&
+            !event.target.classList.contains("list-menu")) ||
           event.target.classList.contains("priority") ||
           (event.target.classList.contains("form-control") &&
             todoContext.expand)
@@ -142,18 +144,24 @@ const RightSideBar = () => {
 
   const handleSelectLabel = async (selectedLabel) => {
     if (todoContext.chosenTodo)
-      await todoContext.setChosenTodo({...todoContext.chosenTodo, additionalLabels: selectedLabel});
-		try {
-			await fetch(`${process.env.REACT_APP_API_URL}/todos/update-labels/${chosenTodo._id}`, {
-				method: "PUT",
-				headers: authHeader(),
-				body: JSON.stringify({
-					newLabelsArray: selectedLabel
-				}),
-			});
-		} catch (e) {
-			console.log(e);
-		}
+      await todoContext.setChosenTodo({
+        ...todoContext.chosenTodo,
+        additionalLabels: selectedLabel,
+      });
+    try {
+      await fetch(
+        `${process.env.REACT_APP_API_URL}/todos/update-labels/${chosenTodo._id}`,
+        {
+          method: "PUT",
+          headers: authHeader(),
+          body: JSON.stringify({
+            newLabelsArray: selectedLabel,
+          }),
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const addPriority = async (e) => {
@@ -293,14 +301,17 @@ const RightSideBar = () => {
       <Card body className="mt-2">
         <Form.Group>
           <Typeahead
-						inputProps={{ className: "form-control" }}
+            inputProps={{ className: "form-control" }}
             id="basic-typeahead-multiple"
             labelKey="name"
             multiple
             onChange={handleSelectLabel}
             options={labelsContext.labels}
             placeholder="Attach associated labels..."
-            selected={todoContext.chosenTodo && (todoContext.chosenTodo.additionalLabels || [])}
+            selected={
+              todoContext.chosenTodo &&
+              (todoContext.chosenTodo.additionalLabels || [])
+            }
           />
         </Form.Group>
       </Card>

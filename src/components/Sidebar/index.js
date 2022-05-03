@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FloatingLabel, Form, ListGroup } from "react-bootstrap";
+import { Dropdown, FloatingLabel, Form, ListGroup } from "react-bootstrap";
 
 import "./Sidebar.css";
 import { authHeader } from "../../api/auth";
 import { LabelContext } from "../../contexts/LabelContext";
 import { ListContext } from "../../contexts/ListContext";
+import { TodoContext } from "../../contexts/TodoContext";
+import TodoAPI from "../../api/todo.api";
 
 const Sidebar = () => {
   const defaultLabels = [
@@ -18,6 +20,7 @@ const Sidebar = () => {
   const [newList, setNewList] = useState("");
   const labelContext = useContext(LabelContext);
   const listContext = useContext(ListContext);
+  const todoContext = useContext(TodoContext);
   const user = JSON.parse(localStorage.getItem("authInfo")).user;
 
   const fetchLabels = async () => {
@@ -75,10 +78,16 @@ const Sidebar = () => {
     const respJson = await resp.json();
 
     listContext.setLists(respJson);
+
+    return respJson;
   };
 
   const handleEnter = async (event) => {
-    if (event.key === "Enter") {
+    if (
+      event.key === "Enter" &&
+      event.target.value.trim() !== "" &&
+      event.target.value.trim().toLowerCase() !== "all"
+    ) {
       await fetch(`${process.env.REACT_APP_API_URL}/lists`, {
         method: "POST",
         headers: authHeader(),
@@ -98,29 +107,79 @@ const Sidebar = () => {
 
   const onListNameBlurred = async (event) => {
     if (
-      event.currentTarget.textContent === listContext.selectedList.name ||
-      !event.currentTarget.textContent
+      event.currentTarget.textContent.trim() ===
+        listContext.selectedList.name ||
+      event.currentTarget.textContent.trim() === "All" ||
+      !event.currentTarget.textContent.trim()
     )
       return;
     else {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/lists/update`,
-        {
+      const lastId = listContext.selectedList._id;
+      try {
+        await fetch(`${process.env.REACT_APP_API_URL}/lists/update`, {
           method: "PUT",
           headers: authHeader(),
           body: JSON.stringify({
             ...listContext.selectedList,
-            name: event.currentTarget.textContent,
+            name: event.currentTarget.textContent.trim(),
           }),
-        }
+        });
+        const newLists = await fetchLists();
+        listContext.setSelectedList(
+          newLists.find((list) => list._id === lastId)
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const handleRemoveList = async () => {
+    try {
+      await Promise.all(
+        listContext.selectedList.todos.map(async (todo) => {
+          await fetch(`${process.env.REACT_APP_API_URL}/todos/${todo._id}`, {
+            method: "DELETE",
+            headers: authHeader(),
+          });
+        })
       );
+
+      await fetch(`${process.env.REACT_APP_API_URL}/lists/update`, {
+        method: "PUT",
+        headers: authHeader(),
+        body: JSON.stringify({
+          ...listContext.selectedList,
+          todos: [],
+          disabled: true,
+        }),
+      });
+      await fetchLists();
+      const todos = await TodoAPI.loadAllTodos();
+      const todosJSON = await todos.json();
+      todoContext.setAllTodos(todosJSON.todos);
+      listContext.setSelectedList({ name: "All", todos: todosJSON.todos });
+      todoContext.setTodosList(todosJSON.todos);
+    } catch (e) {
+      console.log(e);
     }
   };
 
   return (
     <div className={"sidebar"}>
       <ListGroup variant="flush">
-        <ListGroup.Item className={"label-item"} action>
+        <ListGroup.Item
+          className={`label-item ${
+            listContext.selectedList.name === "All" ? "custom-active" : ""
+          }`}
+          action
+          onClick={() => {
+            listContext.setSelectedList({
+              name: "All",
+              todos: todoContext.todosList,
+            });
+          }}
+        >
           <i className="bi bi-brightness-high"></i>
           <span className={"label-name"}>All</span>
         </ListGroup.Item>
@@ -128,9 +187,15 @@ const Sidebar = () => {
           return (
             !list.disabled && (
               <ListGroup.Item
-                className={"additional-label"}
+                className={`additional-label ${
+                  list.name === listContext.selectedList.name
+                    ? "custom-active"
+                    : ""
+                }`}
                 action
-                onClick={() => listContext.setSelectedList(list)}
+                onClick={() => {
+                  listContext.setSelectedList(list);
+                }}
               >
                 <div className={"list-item"}>
                   <i
@@ -147,12 +212,28 @@ const Sidebar = () => {
                     {list.name}
                   </span>
                 </div>
-                <span className={"remove-label"}>
-                  <i
-                    className="bi bi-x-circle"
-                    onClick={() => handleRemoveLabel(list)}
-                  ></i>
-                </span>
+                <div>
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      id="dropdown-basic"
+                      size="sm"
+                      className="dropdown-btn list-menu"
+                    />
+                    <Dropdown.Menu>
+                      <Dropdown.Item className="dropdown-list-item">
+                        <i className="bi bi-people-fill" />
+                        Publish this list
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        className="dropdown-list-item delete-task"
+                        onClick={handleRemoveList}
+                      >
+                        <i className="bi bi-trash3" />
+                        Remove list
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
               </ListGroup.Item>
             )
           );
