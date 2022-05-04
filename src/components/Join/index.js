@@ -1,9 +1,10 @@
 import { Alert } from 'react-bootstrap';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { authHeader } from '../../api/auth';
+import './Join.css';
 
 const Join = () => {
 	const { id } = useParams();
@@ -29,7 +30,7 @@ const Join = () => {
 		const response = await res.json();
 		console.log('Join list', response['data']);
 
-		if (response['inviteToken'] === 200) {
+		if (response['data']) {
 			setIsSuccess(true);
 		} else {
 			setIsSuccess(false);
@@ -66,12 +67,22 @@ const Join = () => {
 	const generateAlert = () => {
 		if (status === 'success') {
 			return (
-				<Alert variant="success">Join list successfully. Please wait...</Alert>
+				<Alert className="join-list" variant="success">
+					Join list successfully. Please wait...
+				</Alert>
 			);
 		} else if (status === 'fail') {
-			return <Alert variant="danger">Join list fail. Please wait...</Alert>;
+			return (
+				<Alert className="join-list" variant="danger">
+					Join list fail. Please wait...
+				</Alert>
+			);
 		} else if (status === 'waiting') {
-			return <Alert variant="warning">Waiting please...</Alert>;
+			return (
+				<Alert className="join-list" variant="warning">
+					Waiting please...
+				</Alert>
+			);
 		}
 	};
 

@@ -9,6 +9,7 @@ import TodoAPI from '../../api/todo.api';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { mapOrder } from '../../utilities/sort';
 import ToolBar from '../ToolBar';
+import { ListContext } from '../../contexts/ListContext';
 
 const TodoList = () => {
 	const [error, setError] = useState(null);
@@ -16,6 +17,7 @@ const TodoList = () => {
 	const [board, setBoard] = useState({});
 	const navigate = useNavigate();
 	const todoContext = useContext(TodoContext);
+	const listContext = useContext(ListContext);
 
 	// Note: the empty deps array [] means
 	// this useEffect will run once
@@ -30,6 +32,7 @@ const TodoList = () => {
 				if (res.status === 401) {
 					setError({ message: 'Unauthorized' });
 					navigate('login');
+					localStorage.clear();
 					return;
 				}
 				return res.json();
@@ -41,6 +44,12 @@ const TodoList = () => {
 					todoContext.setTodosList(
 						mapOrder(board.todos, board.todoOrder, '_id')
 					);
+					if (!listContext.selectedList.todos.length) {
+						listContext.setSelectedList({
+							name: 'All',
+							todos: mapOrder(board.todos, board.todoOrder, '_id'),
+						});
+					}
 					return Promise.resolve(board);
 				},
 				// Note: it's important to handle errors here
@@ -52,6 +61,22 @@ const TodoList = () => {
 				}
 			);
 		return fetchResult;
+	};
+
+	const fetchLists = async (lastId) => {
+		const resp = await fetch(
+			`${process.env.REACT_APP_API_URL}/lists/user/${
+				JSON.parse(localStorage.getItem('authInfo')).user._id
+			}`,
+			{
+				method: 'GET',
+				headers: authHeader(),
+			}
+		);
+		const respJson = await resp.json();
+
+		listContext.setLists(respJson);
+		listContext.setSelectedList(respJson.find((list) => list._id === lastId));
 	};
 
 	const handleCreateNewTodo = (input) => {
@@ -70,6 +95,22 @@ const TodoList = () => {
 			.then(async (resp) => {
 				if (resp.ok) {
 					await loadAllTodos();
+					if (listContext.selectedList.name !== 'All') {
+						try {
+							const data = await resp.json();
+							await fetch(`${process.env.REACT_APP_API_URL}/lists/update`, {
+								method: 'PUT',
+								headers: authHeader(),
+								body: JSON.stringify({
+									...listContext.selectedList,
+									todos: [...listContext.selectedList.todos, data.newTodo],
+								}),
+							});
+							await fetchLists(listContext.selectedList._id);
+						} catch (e) {
+							console.log(e);
+						}
+					}
 				} else {
 					const data = await resp.json();
 					const error = (data && data.message) || resp.status;
@@ -91,6 +132,7 @@ const TodoList = () => {
 			});
 			if (response.ok) {
 				const result = await loadAllTodos();
+				console.log('-------', result);
 				todoContext.setChosenTodo(
 					result.todos.find((item) => item._id === _id)
 				);
@@ -118,9 +160,9 @@ const TodoList = () => {
 		})
 			.then((res) => res.json())
 			.then(
-				(result) => {
+				async (result) => {
 					setIsLoaded(true);
-					loadAllTodos();
+					await loadAllTodos();
 				},
 				(error) => {
 					setIsLoaded(true);
@@ -194,20 +236,28 @@ const TodoList = () => {
 								className="todo-list"
 								ref={provided.innerRef}
 								{...provided.droppableProps}>
-								{todoContext.todosList.map((todo, index) => (
-									<TodoItem
-										key={todo._id}
-										id={todo._id}
-										index={index}
-										name={todo.name}
-										isCompleted={todo.isCompleted}
-										priority={todo.priority}
-										createdDate={todo.createdDate}
-										onToggle={() => handleToggleTodoItem(todo)}
-										onTodoClicked={() => handleViewTodoDetail(todo)}
-										onTodoDelete={() => handleDeleteTodo(todo)}
-									/>
-								))}
+								{todoContext.todosList
+									.filter((todo) => {
+										return (
+											listContext.selectedList.todos.findIndex(
+												(item) => item._id === todo._id
+											) !== -1
+										);
+									})
+									.map((todo, index) => (
+										<TodoItem
+											key={todo._id}
+											id={todo._id}
+											index={index}
+											name={todo.name}
+											isCompleted={todo.isCompleted}
+											priority={todo.priority}
+											createdDate={todo.createdDate}
+											onToggle={() => handleToggleTodoItem(todo)}
+											onTodoClicked={() => handleViewTodoDetail(todo)}
+											onTodoDelete={() => handleDeleteTodo(todo)}
+										/>
+									))}
 								{provided.placeholder}
 							</ul>
 						)}

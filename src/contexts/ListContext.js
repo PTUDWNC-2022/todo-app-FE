@@ -4,7 +4,7 @@ const ListContext = createContext(null);
 
 const ListProvider = ({ children }) => {
   const [lists, setLists] = useState([]);
-  const [selectedList, setSelectedList] = useState(null);
+  const [selectedList, setSelectedList] = useState({ name: "All", todos: [] });
 
   const value = {
     lists,

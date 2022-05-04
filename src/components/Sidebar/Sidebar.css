@@ -63,3 +63,7 @@
 	display: inline-block;
 	padding-right: 10px;
 }
+
+.custom-active {
+    background-color: rgb(237, 237, 237);
+}
