@@ -31,8 +31,7 @@ const TodoItem = ({
 
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		// some basic styles to make the items look a bit nicer
-		// userSelect: 'none',
-
+		userSelect: 'none',
 		// change background colour if dragging
 		background: isDragging ? '#ecf7fd' : '',
 
@@ -41,7 +40,7 @@ const TodoItem = ({
 	});
 
 	return (
-		<Draggable key={id} draggableId={id} index={index}>
+		<Draggable draggableId={id} index={index}>
 			{(provided, snapshot) => (
 				<li
 					className={`todo-item ${isCompleted ? 'checked-item' : ''} ${
@@ -61,9 +60,9 @@ const TodoItem = ({
 						checked={isCompleted}
 						onChange={onToggle}
 					/>
-					{priorityList.map((p) =>
-						priority && p.name === priority && priority!== 'None' ? (
-							<div style={{ color: p.color }} className="priority">
+					{priorityList.map((p, index) =>
+						priority && p.name === priority && priority !== 'None' ? (
+							<div key={index} style={{ color: p.color }} className="priority">
 								<i className="bi bi-flag-fill"></i>
 								{priority}
 							</div>

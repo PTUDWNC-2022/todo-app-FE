@@ -68,41 +68,45 @@ const ToolBar = () => {
 	};
 
 	return (
-		<>
-			<Navbar
-				variant="light"
-				className={`toolbar ${todoContext.expand ? 'expand' : ''}`}>
-				<Navbar.Brand>My Day</Navbar.Brand>
+		<Navbar
+			variant="light"
+			className={`toolbar ${todoContext.expand ? 'expand' : ''}`}>
+			<Navbar.Brand>My Day</Navbar.Brand>
 
-				<Dropdown>
-					<Dropdown.Toggle id="dropdown-sort" size="sm" className="btn-sort">
-						<i className="bi bi-arrow-down-up icon"></i>Sort
-					</Dropdown.Toggle>
+			<Dropdown>
+				<Dropdown.Toggle
+					id="dropdown-sort"
+					size="sm"
+					className={`btn-sort ${todoContext.expand ? 'btn-on-expand' : ''}`}>
+					<i className="bi bi-arrow-down-up icon"></i>Sort
+				</Dropdown.Toggle>
 
-					<Dropdown.Menu className="menu-sort">
-						<Dropdown.Header className="sort-header">Sort by</Dropdown.Header>
-						<Dropdown.Divider />
-						<Dropdown.Item onClick={() => handleSort('priority')}>
-							<i className="bi bi-flag-fill"></i>
-							Priority
-						</Dropdown.Item>
-						<Dropdown.Item onClick={() => handleSort('createdDate')}>
-							<i className="bi bi-calendar2-plus"></i>
-							Creation date
-						</Dropdown.Item>
-						<Dropdown.Item onClick={() => handleSort('dueDate')}>
-							<i className="bi bi-calendar3"></i>
-							Due date
-						</Dropdown.Item>
-						<Dropdown.Item onClick={() => handleSort('alphabetically')}>
-							<i className="bi bi-arrow-down-up icon"></i>
-							Alphabetically
-						</Dropdown.Item>
-					</Dropdown.Menu>
-				</Dropdown>
-			</Navbar>
+				<Dropdown.Menu className="menu-sort">
+					<Dropdown.Header className="sort-header">Sort by</Dropdown.Header>
+					<Dropdown.Divider />
+					<Dropdown.Item onClick={() => handleSort('priority')}>
+						<i className="bi bi-flag-fill"></i>
+						Priority
+					</Dropdown.Item>
+					<Dropdown.Item onClick={() => handleSort('createdDate')}>
+						<i className="bi bi-calendar2-plus"></i>
+						Creation date
+					</Dropdown.Item>
+					<Dropdown.Item onClick={() => handleSort('dueDate')}>
+						<i className="bi bi-calendar3"></i>
+						Due date
+					</Dropdown.Item>
+					<Dropdown.Item onClick={() => handleSort('alphabetically')}>
+						<i className="bi bi-arrow-down-up icon"></i>
+						Alphabetically
+					</Dropdown.Item>
+				</Dropdown.Menu>
+			</Dropdown>
 			{sortType ? (
-				<div className="sorting-indicator">
+				<div
+					className={`sorting-indicator ${
+						todoContext.expand ? 'btn-on-expand' : ''
+					}`}>
 					<Button onClick={handleReverseSortOrder} className="sorting-opts-btn">
 						<i className="bi bi-list-columns-reverse"></i>
 					</Button>
@@ -112,7 +116,7 @@ const ToolBar = () => {
 					</Button>
 				</div>
 			) : null}
-		</>
+		</Navbar>
 	);
 };
 

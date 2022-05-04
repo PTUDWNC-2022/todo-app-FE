@@ -2,6 +2,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	position: relative;
 }
 
 .btn-sort {
@@ -36,8 +37,9 @@
 }
 
 .sorting-indicator {
-	float: right;
-	margin-bottom: 20px;
+	position: absolute;
+	right: 0;
+	top: 100%;
 }
 
 .sorting-indicator span {

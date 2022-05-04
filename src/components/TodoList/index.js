@@ -91,7 +91,9 @@ const TodoList = () => {
 			});
 			if (response.ok) {
 				const result = await loadAllTodos();
-				todoContext.setChosenTodo(result.find((item) => item._id === _id));
+				todoContext.setChosenTodo(
+					result.todos.find((item) => item._id === _id)
+				);
 			} else {
 				const data = await response.json();
 				const error = (data && data.message) || response.status;
