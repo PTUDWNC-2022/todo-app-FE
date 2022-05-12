@@ -236,15 +236,23 @@ const TodoList = () => {
 								className="todo-list"
 								ref={provided.innerRef}
 								{...provided.droppableProps}>
-								{todoContext.todosList
-									.filter((todo) => {
-										return (
-											listContext.selectedList.todos.findIndex(
-												(item) => item._id === todo._id
-											) !== -1
-										);
-									})
-									.map((todo, index) => (
+								{listContext.selectedList.name === 'All' &&
+									todoContext.todosList.map((todo, index) => (
+										<TodoItem
+											key={todo._id}
+											id={todo._id}
+											index={index}
+											name={todo.name}
+											isCompleted={todo.isCompleted}
+											priority={todo.priority}
+											createdDate={todo.createdDate}
+											onToggle={() => handleToggleTodoItem(todo)}
+											onTodoClicked={() => handleViewTodoDetail(todo)}
+											onTodoDelete={() => handleDeleteTodo(todo)}
+										/>
+									))}
+								{listContext.selectedList.name !== 'All' &&
+									listContext.selectedList.todos.map((todo, index) => (
 										<TodoItem
 											key={todo._id}
 											id={todo._id}
